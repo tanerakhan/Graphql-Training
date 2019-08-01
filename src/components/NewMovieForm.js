@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Query, Mutation } from 'react-apollo'
 import {getDirectorsQuery, getMoviesQuery, newMovieMutation} from '../query/query'
+import {FormContainer, FormEl, LoadScreen} from '../components/style'
+import LoadIcon from '../utils/LoadIcon';
 export default class NewMovieForm extends Component {
     state={
         title: '',
@@ -17,8 +19,9 @@ export default class NewMovieForm extends Component {
         return (
             <Mutation mutation={newMovieMutation}>
                 { (addMovie, {loading, error}) => (
-                    <div>
+                    <FormContainer>
                 <form onSubmit={ (e) => { 
+                    debugger
                     e.preventDefault()
                     addMovie({
                         variables:{
@@ -30,19 +33,16 @@ export default class NewMovieForm extends Component {
                         refetchQueries: [{ query: getMoviesQuery }]
                     }) 
                     }}>
-                    <div>
-                    <label htmlFor="title girin"></label>
+                    <FormEl>
                         <input type="text" name="title" onChange={(e) => this.onChange(e)} placeholder="title"/>
-                    </div>
-                    <div>
-                    <label htmlFor="description"></label>
+                    </FormEl>
+                    <FormEl>
                         <textarea type="text" name="description" onChange={(e) => this.onChange(e)} placeholder="description"/>
-                    </div>
-                    <div>
-                    <label htmlFor="year"></label>
+                    </FormEl>
+                    <FormEl>
                         <textarea type="text" name="year" onChange={(e) => this.onChange(e)} placeholder="year"/>
-                    </div>
-                    <div>
+                    </FormEl>
+                    <FormEl>
                         <select name="director" id="director" onChange={(e) => this.onChange(e)}>
                             <option>director seç</option>
                             <Query query={getDirectorsQuery}>
@@ -58,14 +58,14 @@ export default class NewMovieForm extends Component {
 								}}
 							</Query>
                         </select>
-                    </div>
-                    <div>
+                    </FormEl>
+                    <FormEl>
                         <input type="submit" value="button"/>
-                    </div>
+                    </FormEl>
                 </form>
-                { loading && <div>loading...</div> }
+                { loading && <LoadScreen><div><LoadIcon/></div></LoadScreen> }
                 { error && <div>error...</div> }
-            </div>
+            </FormContainer>
 
                 )}
             </Mutation>

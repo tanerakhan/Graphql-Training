@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Query } from 'react-apollo';
 import {getMoviesQuery,getMovieQuery} from '../query/query'
 import LoadIcon from '../utils/LoadIcon'
 import { Modal, Button } from 'antd';
+import {Movieul} from './style'
 
 const style = {
   margin:'0 10px'
@@ -29,38 +30,34 @@ class Movielist extends Component {
     });
   };
 
-  data = () => {  
+  data = () => { 
     return <Query query={getMoviesQuery}>
       {({loading,error,data}) => {
-      if(data.movies !== undefined && data.movies.length > 0){
+          if(( data && data.movies && data.movies.length > 0)){
       return data.movies.map(({ id, title, description, year }) => (
-          <ul key={id}> 
-            <li onClick={() => {
+            <li key={id} onClick={() => {
               this.showModal(id)
             }}>
               <span style={style}><strong>Film adı: </strong><i>{title}</i></span>
-              <span style={style}><strong>Film açıklaması: </strong><i>{description}</i></span>
-              <span style={style}><strong>yılı: </strong><i>{year}</i></span>
+{/*               <span style={style}><strong>Film açıklaması: </strong><i>{description}</i></span>
+              <span style={style}><strong>yılı: </strong><i>{year}</i></span> */}
               {/* <span style={style}><strong>yönetmeni: </strong><i>{movie.directorId}</i></span> */}
              </li>
-          </ul>
         ))
     }
-    else{
-      return <div>içerik yok</div>
-    }
     if(loading){
+      debugger
       return <LoadIcon/>
     }
     if(error){
-      return <div>error</div>
+      return <div>Data Not Found!</div>
     }
     }}
 </Query>
   }
     render() {
           return (
-            <div>
+            <Fragment>
              <Modal
           title="Basic Modal"
           visible={this.state.visible}
@@ -69,11 +66,9 @@ class Movielist extends Component {
         >
         <Query query={getMovieQuery} variables={{id: this.state.id}}>
               {({loading,error,data}) => {
-                debugger
                     if(loading) return <LoadIcon/>
                     if(error) return <div>error!</div>
                     if(data){
-                      console.log(data)
                         return <div key={data.movie.id}>
                           <div>
                             <strong>Film:</strong>
@@ -93,8 +88,12 @@ class Movielist extends Component {
               }}
         </Query>
         </Modal>
-              {this.data()}
-            </div>
+        <Movieul>
+        <ul>
+          {this.data()}
+        </ul>
+        </Movieul>
+            </Fragment>
         )
     }
 }
